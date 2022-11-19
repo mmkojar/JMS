@@ -1,0 +1,496 @@
+
+	// -----Invoices Tables Starts-----
+
+	public function invoices() {
+
+		$this->data['title'] = 'Total Invoices';
+				
+		// $this->data['invoices1'] = $this->Payment_model->get_invoices('2017');
+		$this->data['get_payment_year'] = $this->Payment_model->get_joda_fee();
+		
+		$this->_render_page('pages' . DIRECTORY_SEPARATOR . 'invoices', $this->data);
+	}
+
+	public function invoices_api($year) {
+
+		header("Content-Type: application/json; charset=UTF-8");
+		
+		$data =  $this->Payment_model->get_invoices($year);
+		foreach ($data as $value) {
+			$value->username = str_replace('_',' ',ucwords($value->username));
+		}
+		print_r(json_encode($data));
+	}
+
+	public function get_invoices($year)
+	{		
+		$this->db->select('fy_'.$year.'_amt_to_collect as amt_to_collect,
+			fy_'.$year.'_receipt_no as receipt_no,
+			fy_'.$year.'_receipt_date as receipt_date,
+			fy_'.$year.'_receipt_amt as receipt_amt,
+			fy_'.$year.'_balance_amt as balance_amt,
+			fy_'.$year.'_balance_count_amt as balance_count_amt,
+			users.username,zone_master.zone_name');
+		$this->db->join('users',"users.id = invoices.user_id","inner");
+		$this->db->join('zone_master',"zone_master.id = invoices.zone_id","inner");
+		$this->db->from('invoices');
+		$query=$this->db->get();
+		return $query->result();
+	}
+
+		<?php $this->load->view('templates/header'); ?>                     
+
+            <div class="col-12">
+	            <div class="card">
+	                <div class="card-body">
+	                	<h4><?php echo $title; ?></h4>
+                    	<?php $this->load->view('templates/filter'); ?>
+                    	<div class="table-responsive">
+	                        <table id="invoices" class="table table-striped table-bordered">
+	                            <thead>
+	                                <tr>
+	                                	<th>Sr.No</th>
+	                                    <th>Name</th>
+	                               	    <th>Zone</th>
+	                                	<th>Amount To Collect</th>
+	                                    <th>Receipt No</th>
+	                                	<th>Receipt Date</th>
+	                                	<th>Receipt Amount</th>
+	                                	<th>Balance Amount</th>
+	                                	<th>Balance Count</th>
+	                                	<th>Year</th>
+	                                </tr>
+	                            </thead>
+	                            <tbody id="display_invoices">	                               
+	                            </tbody>
+	                        </table>	                        
+							<?php $this->load->view('templates/paging'); ?>
+						</div>
+	                </div>
+	            </div>
+            </div>
+            
+    
+			<?php $this->load->view('templates/footer'); ?>
+
+				/*public function invoices () {
+
+		$this->data['title'] = "Total Invoices";
+		$this->data['get_payment_year'] = $this->Payment_model->get_joda_fee();
+		$this->_render_page('pages' . DIRECTORY_SEPARATOR . 'invoices', $this->data);
+	}
+
+
+	public function invoices_api($year)
+	{
+		$list = $this->Payment_model->get_datatables($year,2);
+		
+		$i = 1;
+		$data = array();
+		$no = $_POST['start'];
+		foreach ($list as $requested) {
+			$no++;
+			$row = array();
+			$row[] = $requested->id;
+			$row[] = str_replace('_',' ',ucwords($requested->username));
+			$row[] = $requested->zone_name;
+			$row[] = $requested->amt_to_collect ? $requested->amt_to_collect : '0.00';
+			$row[] = $requested->receipt_no ? $requested->receipt_no : '-';
+			$row[] = $requested->receipt_date ? $requested->receipt_date : '-';
+			$row[] = $requested->receipt_amt ? $requested->receipt_amt : '0.00';
+			$row[] = $requested->balance_amt ? $requested->balance_amt : '0.00';
+			$row[] = $requested->balance_count_amt ? $requested->balance_count_amt : '0.00';
+			// $row[] = $year;
+			$data[] = $row;
+		}
+		
+			$output = array(
+				"draw" => $_POST['draw'],
+				"recordsTotal" => $this->Payment_model->count_all('invoices'),
+				"recordsFiltered" => $this->Payment_model->count_filtered($year,2),
+				"data" => $data,
+			);
+		
+		//output to json format
+		echo json_encode($output);
+	}*/
+
+    // -----Invoices Tables Ends -----
+
+    ///-----Filters---------
+
+	<?php 
+	  	$link = $_SERVER['PHP_SELF'];
+    	$link_array = explode('/',$link);
+    	$page = end($link_array);
+    	$table = '';
+    	$name = '';
+    	if($page == 'area') {
+    		$table = 'display_area_wise_reports';
+    		$name = 'Area Wise Report';
+    	}
+    	if($page == 'surname') {
+    		$table = 'display_surname_wise_reports';
+    		$name = 'Surname Wise Report';
+    	}
+	?>
+
+	<div class="row mt-4">		
+		<div class="col-md-12">
+			<?php if($page == 'area' || $page == 'surname'): ?>
+				<button class="btn btn-primary mb-3" onclick="exportTableToExcel('<?php echo $table; ?>', '<?php echo $name; ?>')">Excel</button>
+				<button class="btn btn-primary mb-3" onclick="javascript:exportTableToPDF('<?php echo $name; ?>')">PDF</button>
+			<?php endif; ?>
+		</div>					
+		<?php if($page == 'invoices' || $page == 'payment' || $page == 'surname'): ?>
+	    	<div class="col-md-4">
+	        	<div class="form-group">
+	        		<label for="maxRows">Select Entries</label>
+			 		<select class="form-control" id="maxRows">
+						<option value="5">5</option>
+						<option value="10">10</option>
+						<option value="15">15</option>
+						<option value="20">20</option>
+						<option value="50">50</option>
+						<option value="70">70</option>
+						<option value="100">100</option>
+					</select>
+			  	</div>
+		  	</div>
+	  	<?php endif; ?>
+		  	<div class="col-md-4">
+		  		<div class="form-group">
+	    			<label for="year_search">Select Year</label>
+	    			<select id="year_search" class="form-control">
+	    				<?php foreach($get_payment_year as $row): ?>
+	                      <option value="<?php echo $row->financial_year ?>"><?php echo $row->financial_year ?></option>
+	                    <?php endforeach ?>
+	    			</select>
+	    		</div>
+		  	</div>
+	  	<?php if($page == 'invoices' || $page == 'payment' || $page == 'surname'): ?>
+		  	<div class="col-md-4" id="custom_search">
+		  		<form name="rcp_search">
+			  		<div class="form-group">
+			  			<label for="myInput">Search</label>
+			  			<input type="text" id="myInput" class="form-control">
+			  			<!-- <button type="submit" class="btn btn-success" id="search_btn"><i class="mdi mdi-send"></i></button> -->
+			  		</div>
+		  		</form>
+		  	</div>
+	  	<?php endif; ?>
+  	</div>
+
+  	
+	public function _get_datatables_query($year,$id)
+	{
+		if($id == 1) {
+			$this->db->select('invoices.id,invoices.user_id,
+				invoices.fy_'.$year.'_receiver_name as receiver_name,
+				invoices.fy_'.$year.'_receipt_no as receipt_no,
+				invoices.fy_'.$year.'_receipt_date as receipt_date,
+				invoices.fy_'.$year.'_receipt_amt as receipt_amt,
+				invoices.fy_'.$year.'_balance_count_amt as balance_count_amt,
+				users.username,zone_master.zone_name');
+			$this->db->from('invoices');
+			$this->db->join('users',"users.id = invoices.user_id","inner");
+			$this->db->join('zone_master',"zone_master.id = invoices.zone_id","inner");
+			$this->db->where('fy_'.$year.'_balance_count_amt',0);
+			
+			$column = array(
+				'0' => 'invoices.id',
+				'1' => 'username',
+				'2' => 'zone_name',			
+				'3' => 'fy_'.$year.'_receipt_no',
+				'4' => 'fy_'.$year.'_receipt_date',
+				'5' => 'fy_'.$year.'_receipt_amt',
+				'6' => 'fy_'.$year.'_receiver_name',
+				'7' => 'invoices.user_id'
+			);
+		}
+
+		if($id == 2) {
+			$this->db->select('invoices.id,fy_'.$year.'_amt_to_collect as amt_to_collect,
+				fy_'.$year.'_receipt_no as receipt_no,
+				fy_'.$year.'_receipt_date as receipt_date,
+				fy_'.$year.'_receipt_amt as receipt_amt,
+				fy_'.$year.'_balance_amt as balance_amt,
+				fy_'.$year.'_balance_count_amt as balance_count_amt,
+				users.username,zone_master.zone_name');
+			$this->db->from('invoices');
+			$this->db->join('users',"users.id = invoices.user_id","inner");
+			$this->db->join('zone_master',"zone_master.id = invoices.zone_id","inner");		
+			
+			$column = array(
+				'0' => 'invoices.id',
+				'1' => 'username',
+				'2' => 'zone_name',
+				'3' => 'fy_'.$year.'_amt_to_collect',
+				'4' => 'fy_'.$year.'_receipt_no',
+				'5' => 'fy_'.$year.'_receipt_date',
+				'6' => 'fy_'.$year.'_receipt_amt',
+				'7' => 'fy_'.$year.'_balance_amt',
+				'8' => 'fy_'.$year.'_balance_count_amt'
+			);
+		}
+		
+		
+		$i = 0;
+		$where = '';
+		if($_POST['search']['value']){
+			$where .= '(';
+		}
+		foreach ($column as $item) 
+		{
+			if($_POST['search']['value']) {
+				// print_r($item);
+				//($i===0) ? $this->db->like($item, $_POST['search']['value']) : $this->db->or_like($item, $_POST['search']['value']);
+				($i===0) ? $where .= '`'.$item.'` LIKE "%'.$_POST["search"]["value"].'%" ' : $where .= 'OR `'.$item.'` LIKE "%'.$_POST["search"]["value"].'%" ';
+			
+			}
+				$column[$i] = $item;
+				$i++;
+		}
+		if($_POST['search']['value']){
+			$where .= ')';
+			$this->db->where($where);
+			// print_r($where);
+		}
+		if(isset($_POST['order']))
+		{
+			$this->db->order_by($column[$_POST['order']['0']['column']], $_POST['order']['0']['dir']);
+		}
+		else if(isset($this->order))
+		{
+			$order = $this->order;
+
+			$this->db->order_by(key($order), $order[key($order)]);
+		}
+		// else {
+		// 	$this->db->order_by('id','ASC');
+		// }
+		
+		// print_r($this->db->queries);
+	}
+
+	function get_datatables($year,$id)
+	{
+		$this->_get_datatables_query($year,$id);
+		if($_POST['length'] != -1)
+		$this->db->limit($_POST['length'], $_POST['start']);
+		$query = $this->db->get();
+		return $query->result();
+	}
+
+	function count_filtered($year,$id)
+	{
+		$this->_get_datatables_query($year,$id);
+		$query = $this->db->get();
+		return $query->num_rows();
+	}
+
+	public function count_all($table)
+	{
+		$this->db->from($table);
+		return $this->db->count_all_results();
+	}
+	
+
+	jQuery.fn.dataTable.Api.register( 'sum()', function ( ) {
+                return this.flatten().reduce( function ( a, b ) {
+                    if ( typeof a === 'string' ) {
+                        a = a.replace(/[^\d.-]/g, '') * 1;
+                    }
+                    if ( typeof b === 'string' ) {
+                        b = b.replace(/[^\d.-]/g, '') * 1;
+                    }
+
+                    return a + b;
+                }, 0 );
+            } );                    
+            $('#config').DataTable();
+
+	// ----- User Js --------
+	/* get_user_list();
+                function get_user_list() {
+                    $.ajax({
+                        url:"<?php// echo base_url('auth/get_user_list_api') ?>",
+                        method: 'GET',
+                        dataType: "json",
+                        beforeSend: function() {
+                          $("#preloader").show();
+                        },
+                        success: function(res) {
+                            console.log(res);
+                            var html = "";
+                            var sr_no = 1;
+                            // var check_user_array = ['1','2','3','4','5','6','7','8','9','10','11','12','13','14','15'];
+                            html += `
+                                <thead>
+                                    <tr>
+                                        <th>Sr.No</th>
+                                        <th>First Name</th>
+                                        <th>Father Name</th>
+                                        <th>Last Name</th>
+                                        <th>Phone No.</th>
+                                        <th>Email</th>
+                                        <th>Zone</th>
+                                        <th>Status</th>
+                                        <th>Date</th>
+                                        <th>Edit</th>
+                                    </tr>
+                                </thead>
+                            <tbody>`;
+                                for(var i in res) {
+                                    if(res[i].groups[0].id == '3') {
+                                        html += `
+                                        <tr class="${res[i].status == 'inactive' ? 'bg-danger text-white' : res[i].status == 'divorce' ? 'bg-warning text-dark' : ''}"> 
+                                            <td>${sr_no}</td>
+                                            <td>${res[i].first_name}</td>
+                                            <td>${res[i].father_name}</td>
+                                            <td>${res[i].surname ? res[i].surname : res[i].last_name}</td>
+                                            <td>${res[i].phone ? res[i].phone : '-'}</td>
+                                            <td>${res[i].email ? res[i].email : '-'}</td>
+                                            <td>${res[i].zone_name ? res[i].zone_name : '-'}</td>
+                                            <td>${res[i].status}</td>
+                                            <td>${res[i].created_on}</td>
+                                            <td>
+                                                <a class="btn btn-success btn-sm edit_user" id="${res[i].id}"><i class="mdi mdi-pencil"></i></a>
+                                            </td>`;
+                                        `</tr>`;
+                                        sr_no++;
+                                    }
+                                    
+                                }                                                        
+                            html += `
+                                </tbody>`;
+                            $("#user_config").html(html);
+                            $('#user_config').DataTable({
+                                dom: 'lBfrtip',
+                                buttons: [
+                                    {
+                                        extend: 'collection',
+                                        text: '<span></span> Export',
+                                        buttons: [
+                                            'excel',
+                                            'csv',
+                                            'pdf',
+                                        ],
+                                        exportOptions: {
+                                            columns: [ 10, ':invisible' ]
+                                        }
+                                    }
+                                ]
+                            }); 
+                            $("#preloader").hide();
+                            // getPagination('#invoices');
+                            
+                        }
+                    });
+                }
+
+                $(document).on('click', '.edit_user', function() {
+                    var id = $(this).attr("id");
+
+                    $.ajax({                
+                        url:"<?php echo base_url('auth/ger_user_api') ?>/"+id,
+                        method: 'GET',
+                        dataType: "json",
+                        success: function(res) {
+                            var html = `
+                                <option ${res.status == 'active' ? 'selected' : ''} value="active">Active</option>
+                                <option ${res.status == 'inactive' ? 'selected' : ''} value="inactive">InActive</option>
+                                <option ${res.status == 'divorce' ? 'selected' : ''} value="divorce">Divorce</option>
+                            `;
+                            $("#edit-user-modal").modal('show');
+                            $("#hidden_user_id").val(id);
+                            $("#edit-user-modal #current_zone_id").val(res.zone_id);
+                            $("#edit-user-modal #old_zone_id").val(res.old_zone_id);
+                            $("#edit-user-modal #status").html(html);
+                            $("#edit-user-modal #current_zone").text(res.zone_name);
+                        }
+                    });
+                });
+
+                $(document).on('submit', '#update_user_form', function(e) {
+
+                    e.preventDefault();
+                    var dataSerialize = new FormData($('#update_user_form')[0]);
+
+                    if($("#zone_id").val() !== '' && $("#transfer_date").val() == '') {
+                        toastr.error('Transfer Date is Required')
+                    }
+                    else if($("#status").val() == 'inactive' && $("#expiry_date").val() == '') {
+                        toastr.error('Exipry Date is Required')
+                    }
+                    else {
+                        $.ajax({
+                            url:"<?php echo base_url('auth/update_user_api') ?>",
+                            method: 'POST',
+                            data : dataSerialize,
+                            contentType: false,
+                            processData: false,
+                            dataType: "json",
+                            beforeSend: function() {
+                              $("#preloader").show();
+                            },
+                            success: function(res) {
+                                if(res.status == "success") {
+                                    $("#edit-user-modal").modal('hide');
+                                    toastr.success(res.msg);
+                                    $('#user_config').DataTable().destroy();
+                                    get_user_list();                                
+                                }                        
+                            }
+                        });
+                    }
+
+                    
+                });
+
+                $(document).on('change', '.check_user_status', function() {
+                    if($(this).val() == 'inactive') {
+                        $(".show_on_inactive").show();                        
+                    }
+                    else {
+                        $(".show_on_inactive").hide();                        
+                    }
+                })*/
+
+                public function users() {
+
+					$this->data['title'] = 'Users List';
+					$this->_render_page('pages' . DIRECTORY_SEPARATOR . 'user');
+				}
+
+				public function get_user_list_api() {
+					
+					if($this->ion_auth->is_admin()) {
+						$data = $this->ion_auth->users()->result();
+					}
+					else {
+						$data = [];
+						$login_ids = $this->ion_auth->user()->row();
+
+						$user = $this->ion_auth->users()->result();
+
+						foreach($user as $row)  {
+							if($login_ids->id !== $row->id && $login_ids->zone_id == $row->zone_id) {					
+								array_push($data,$row);
+							}
+						}
+					}
+					foreach ($data as $k => $user)
+					{
+						$data[$k]->groups = $this->ion_auth->get_users_groups($user->id)->result();
+					}
+					if($data) {
+						print_r(json_encode($data));
+					}
+				}
+
+				public function ger_user_api($id) {
+
+					$data = $this->ion_auth->user($id)->row();
+					print_r(json_encode($data));
+				}

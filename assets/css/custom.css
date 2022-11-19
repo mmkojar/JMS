@@ -1,0 +1,141 @@
+.btn-success {
+    color: #fff;
+    background-color: #26A69A;
+    border-color: transparent;
+    border-radius: 0rem;
+}
+
+.btn:hover {
+    cursor: pointer;
+    /*background-color: initial;*/
+    transition: 1s;
+    /*border-color: transparent;*/
+}
+
+.form-control {
+    border: 1px solid #ced4da;
+}
+
+.form-control:focus {
+    border: 1px solid #47b2e4;
+    box-shadow: none;
+}
+
+.profile_pic {
+    width: 35%;
+    float: left;
+}
+
+.profile_hide h1 {
+    visibility: hidden;
+    margin-top: 26px;
+    margin-left: 25%;
+}
+
+.profile_hide h1:first-letter {
+    visibility: visible;
+    color: #fff;
+    text-transform: uppercase;
+    border: 1px solid #fff;
+    border-radius: 50%;
+    padding: 6px 18px;
+    font-size: 30px;
+}
+
+.profile_info {
+    padding: 25px 10px 10px;
+    width: 65%;
+    float: left;
+}
+
+.profile_info span {
+    font-size: 13px;
+    line-height: 30px;
+    color: #BAB8B8
+}
+
+.profile_info h2 {
+    font-size: 14px;
+    color: #ECF0F1;
+    margin: 0;
+    font-weight: 300;
+    text-transform: capitalize;
+}
+
+table.dataTable thead>tr>th.sorting_asc, table.dataTable thead>tr>th.sorting_desc, table.dataTable thead>tr>th.sorting, table.dataTable thead>tr>td.sorting_asc, table.dataTable thead>tr>td.sorting_desc, table.dataTable thead>tr>td.sorting {
+    padding-right: 20px;
+    font-weight: bold;
+}
+
+.table td, .table th {
+    padding: 0.5rem !important;
+}
+
+.nav-tabs .nav-item .nav-link {
+    border: 1px solid #27a9e3;
+    background: #fff;
+    color: #27a9e3;
+    transition: all .3s ease 0s;
+}
+
+.nav-tabs .nav-item a {
+    font-weight: bold;
+    color: #27a9e3;
+}
+
+.nav-tabs .nav-item:first-child .nav-link {
+    border-radius: 30px 0 0 30px;
+}
+
+.nav-tabs .nav-item:last-child .nav-link {
+    border-radius: 0 30px 30px 0;
+}
+
+.nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active {
+    color: #fff !important;
+    background-color: #27a9e3 !important;
+    border-color: transparent !important;
+}
+
+.nav-tabs {
+    margin-bottom: 30px;
+    border-bottom: 0px !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+table tbody tr td:nth-child(2) {
+    text-transform: capitalize;
+}
+
+.round-btn {
+    margin-bottom: 20px;
+    border-radius: 50px;
+}
+
+#custom_search label {
+    display: block;
+}
+
+#custom_search input {
+    display: inline-block !important;
+    /*width: 85% !important;*/
+}
+
+#custom_search button {
+    display: inline-block !important;
+}
+
+/*.table tfoot {
+    display: table-header-group;
+}
+
+.table thead {
+    display: table-row-group;
+}
+*/
+
+.table {
+    font-size: 12px;
+}
