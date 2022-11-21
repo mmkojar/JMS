@@ -32,7 +32,7 @@
                                  <td><?php echo $row->page_range; ?></td>
                                  <td><?php echo $row->current_page; ?></td>
                                  <td><?php echo $row->last_page; ?></td>
-                                 <td><?php echo ($row->status == 'active' ? anchor('books/updateStatus/'.$row->id.'/inactive/'.$row->zone_id,'Active','class="btn btn-sm btn-success"') : anchor('books/updateStatus/'.$row->id.'/active/'.$row->zone_id,'Inactive','class="btn btn-sm btn-danger"')); ?></td>
+                                 <td><?php echo ($row->status == 'active' ? anchor('books/updateStatus/'.$row->id.'/inactive/'.$row->zone_id,'Active','class="btn btn-sm btn-info"') : ($row->status == 'inactive' ? anchor('books/updateStatus/'.$row->id.'/active/'.$row->zone_id,'Inactive','class="btn btn-sm btn-danger"') : '<span class="btn btn-sm btn-success">Completed</span>')); ?></td>
                                  <td><?php echo date('M j Y', strtotime($row->created_at)); ?></td>
                                  <td>
                                     <a class="btn btn-danger btn-sm delete_items text-white" url="books/delete" tname="books_issue" id="<?php echo $row->id ?>"><i class="mdi mdi-delete"></i></a>

@@ -217,7 +217,7 @@ class Members extends CI_Controller {
 			$row[] = $requested->expiry_date ? $requested->expiry_date : '-';
 			$row[] = $requested->divorce_date ? $requested->divorce_date : '-';
 			$row[] = $requested->transfer_date ? $requested->transfer_date : '-';
-			$row[] = $requested->status ? $requested->status : '-';
+			$row[] = ($requested->status == 'active') ? '<span class="btn btn-sm btn-success">Active</span>' : $requested->status;
 			$row[] = '<a class="btn btn-success text-white btn-sm edit_user" id="'.$requested->id.'"><i class="mdi mdi-pencil"></i></a>';
 			// <a class="btn btn-danger btn-sm delete_items text-white" url="auth/delete" tname="users" id="'.$requested->id.'"><i class="mdi mdi-delete"></i></a>
 			$data[] = $row;

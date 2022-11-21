@@ -66,7 +66,7 @@ class Payment extends CI_Controller {
 			$row = array();
 			$row[] = $no;
 			$row[] = $requested->first_name.' '.$requested->father_name.' '.$requested->surname;
-			$row[] = $requested->phone;			
+			$row[] = $requested->phone;
 			$row[] = $requested->zone_name;			
 			$row[] = $requested->receipt_no ? $requested->receipt_no : '-';
 			$row[] = $requested->receipt_date ? $requested->receipt_date : '-';
@@ -262,10 +262,10 @@ class Payment extends CI_Controller {
 					$upd = $this->Books_model->update_book_by_zone($zid,$data);
 					if($upd) {
 						if($rno == $getbook->last_page) {
-
+							
 							$this->db->where('books_issue.id',$getbook->id);
 							$this->db->where('books_issue.zone_id',$zid);
-							$done = $this->db->update('books_issue', ['status'=>'inactive']);
+							$done = $this->db->update('books_issue', ['status'=>'completed']);
 						}
 					}
 
@@ -385,7 +385,7 @@ class Payment extends CI_Controller {
 		$pamount = $this->Payment_model->get_pending_payments($id,$year);
 		$pamount->year = $year-1;
 		if($pamount->balance_amt != 0) {
-			$return['msg'] = $pamount->balance_amt. 'Rs Pending of year '.$pamount->year.' For Selected User';
+			$return['msg'] = $pamount->balance_amt. ' Rs Pending of year '.$pamount->year.' For Selected User';
 			$return['data'] = $pamount;
 		}
 		else if($pamount->balance_amt == 0) {

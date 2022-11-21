@@ -24,7 +24,7 @@ class Reports_model extends CI_Model
 		$this->db->join('zone_master',"zone_master.id = invoices.zone_id","inner");
 		$this->db->join('surname_master',"surname_master.id = invoices.surname","inner");
 		$this->db->where('fy_'.$year.'_amt_to_collect !=',0);
-		// $this->db->where('invoices.status','active');
+		$this->db->where('invoices.status','active');
 		$this->db->order_by('zone_master.zone_name','ASC');
 		$this->db->order_by('surname_master.surname','ASC');
 		if($zid) {
@@ -68,9 +68,11 @@ class Reports_model extends CI_Model
 			}
 		}
 
+		// $this->db->join('users',"users.id = invoices.user_id","inner");
 		$this->db->join('zone_master',"zone_master.id = invoices.zone_id","inner");
 		$this->db->join('surname_master',"surname_master.id = invoices.surname","inner");
 		$this->db->from('invoices');
+		$this->db->where('invoices.status','active');
 		if($param == 'a') {
 			$this->db->where('invoices.zone_id',$id);
 		} else {
@@ -242,7 +244,8 @@ class Reports_model extends CI_Model
 
 		$search_column = array(
 			'0' => 'username',
-			'1' => 'invoices.status'
+			'1' => 'invoices.status',
+			'2' => 'users.phone'
 		);
 		
 		$i = 0;

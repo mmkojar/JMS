@@ -109,7 +109,7 @@ class Payment_model extends CI_Model
 	}
 
 	public function get_pending_payments($id,$year) {
-
+		
 		$last_year = $year-1;
 
 		$this->db->select("user_id,fy_".$last_year."_balance_amt as balance_amt");
@@ -226,7 +226,7 @@ class Payment_model extends CI_Model
 			$column = array(
 				'0' => 'invoices.id',
 				'1' => 'first_name'.'father_name'.'surname',
-				'2' => 'phone',			
+				'2' => 'phone',
 				'3' => 'zone_name',			
 				'4' => 'fy_'.$year.'_receipt_no',
 				'5' => 'fy_'.$year.'_receipt_date',
@@ -251,7 +251,7 @@ class Payment_model extends CI_Model
 				fy_'.$year.'_balance_count_amt as balance_count_amt,
 				fy_'.$year.'_remark as remark,
 				invoices.status as istatus,
-				users.username,users.first_name,users.father_name,users.status as user_status,
+				users.username,users.phone,users.first_name,users.father_name,users.status as user_status,
 				zone_master.zone_name,invoices.id,
 				invoices.zone_id,invoices.surname,surname_master.surname');
 			$this->db->join('users',"users.id = invoices.user_id","inner");
@@ -282,7 +282,10 @@ class Payment_model extends CI_Model
 
 		$search_column = array(
 			'0' => 'username',
-			'1' => 'invoices.status'
+			'1' => 'invoices.status',
+			'2' => 'users.phone',
+			'3' => 'fy_'.$year.'_receipt_no',
+			'4' => 'fy_'.$year.'_receipt_date',
 		);
 		
 		$i = 0;

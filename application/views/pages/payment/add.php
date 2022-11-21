@@ -147,6 +147,7 @@
                            }
                            else {
                               alert('Please Check Book Receipt');
+                              $("#receipt_no").val('');
                            }
                         }
                      });
@@ -180,20 +181,27 @@
          $(document).on('change', '#payment_year', function() {
             var year = $(this).val();
 
-            var selected_id = $('#pay_users option:selected').val();
+            if(year !== '2017') {
+               var selected_id = $('#pay_users option:selected').val();
 
-            if (selected_id != '') {
-               $.ajax({
-                     url: "<?php echo base_url('payment/get_pending_payments_api') ?>/" +
-                        selected_id + '/' + year,
-                     method: 'GET',
-                     dataType: "json",
-                     success: function(res1) {
-                        $("#show_pending_amt").text(res1.msg);
-                        $("#show_pending_amt").addClass('d-block');
-                     }
-               });
+               if (selected_id != '') {
+                  $.ajax({
+                        url: "<?php echo base_url('payment/get_pending_payments_api') ?>/" +
+                           selected_id + '/' + year,
+                        method: 'GET',
+                        dataType: "json",
+                        success: function(res1) {
+                           $("#show_pending_amt").text(res1.msg);
+                           $("#show_pending_amt").addClass('d-block');
+                        }
+                  });
+               }
             }
+            else {
+               $("#show_pending_amt").addClass('d-none');
+               $("#show_pending_amt").removeClass('d-block');
+            }
+            
             /*$.ajax({                
                url:"<?php //echo base_url('payment/get_amount_from_year_api') ?>/"+year,
                method: 'GET',

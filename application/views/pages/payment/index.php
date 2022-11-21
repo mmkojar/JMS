@@ -14,6 +14,7 @@
                                     <tr>
                                         <th>Sr.No</th>
                                         <th>Name</th>
+                                        <th>Phone No.</th>
                                         <th>Zone</th>
                                         <th>Receipt No.</th>
                                         <th>Receipt Date</th>
@@ -183,7 +184,7 @@
 					}
 				],
 				"fnRowCallback": function(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-			      	if (aData[12] == "inactive") {
+			      	if (aData[13] == "inactive") {
 			        	$('td', nRow).addClass('bg-danger text-white');
 			      	}
 			    }

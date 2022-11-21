@@ -94,7 +94,7 @@ class Books extends CI_Controller {
 				
 		$getActiveZone = $this->Books_model->get_active_books_by_zone($z);
 
-		if($st == '1') {
+		if($st == 'active') {
 			if($getActiveZone) {
 				$this->session->set_flashdata('error',' At a time Only One Book Can be Active For a Particular Zone <br>(એક સમયે ફક્ત એક જ પુસ્તક ચોક્કસ ઝોન માટે સક્રિય હોઈ શકે છે)');
 				redirect('Books','refresh');
