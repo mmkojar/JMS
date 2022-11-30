@@ -14,15 +14,14 @@ class Expenses_model extends CI_Model
 
 	public function get_expense($id = FALSE) {
 
+		$this->db->select("expenses.*,expenses_master.name as receiver_name");
+		$this->db->from('expenses');
+		$this->db->join('expenses_master',"expenses_master.id = expenses.receiver_id","left");
 		if($id) {
-			$this->db->select("expenses.*");
-			$this->db->from('expenses');
 			$this->db->where('expenses.id',$id);
 			$query = $this->db->get();
 			return $query->row();
 		}
-		$this->db->select("expenses.*");
-		$this->db->from('expenses');
 		$query=$this->db->get();
 		return $query->result_array();
 	}

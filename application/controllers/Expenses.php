@@ -12,6 +12,8 @@ class Expenses extends CI_Controller {
 		$this->load->library(['ion_auth', 'form_validation']);
 		$this->load->helper(['url', 'language']);
 		$this->load->model('Expenses_model');
+		$this->load->model('Masters_model');
+		$this->load->model('Payment_model');
 		$this->load->model('ion_auth_model');
 		$this->form_validation->set_error_delimiters($this->config->item('error_start_delimiter', 'ion_auth'), $this->config->item('error_end_delimiter', 'ion_auth'));
 
@@ -38,7 +40,7 @@ class Expenses extends CI_Controller {
 	// For Payments & Receipts
 	public function index() {
 
-		$this->data['title'] = 'Expenses';
+		$this->data['title'] = 'Income & Expenses';
 		$this->data['expenses'] = $this->Expenses_model->get_expense();
 		$this->_render_page('pages/expenses' . DIRECTORY_SEPARATOR . 'index', $this->data);
 	}
@@ -46,19 +48,32 @@ class Expenses extends CI_Controller {
 	public function add() {
 
 		$this->form_validation->set_rules('description','Required','required');
+		$this->form_validation->set_rules('receiver_id','Required','required');
+		$this->form_validation->set_rules('amount','Required','required');
 
 		if ($this->form_validation->run() === TRUE)
 		{			
+			$inputamt =  $this->input->post('amount');
+			$year = $this->input->post('year');
+
 			$additional_data = [
+				'receiver_id' => $this->input->post('receiver_id'),
+				'year' => $year,
 				'description' => $this->input->post('description'),
-				'amount' => $this->input->post('amount'),
-				'receiver_name' => $this->input->post('receiver_name'),
+				'amount' => $inputamt,
 				'paid_by' => $this->input->post('paid_by'),
 				'date' => $this->input->post('date'),
 				'created_at' => date('Y-m-d'),
 			];
 			
-			$this->Expenses_model->insert($additional_data);
+			$pay = $this->Expenses_model->insert($additional_data);
+			if ($pay) {
+				$getcollec = $this->db->query('SELECT * FROM admin_collection WHERE year='.$year);
+				$getamt = $getcollec->result()[0];
+
+				$this->db->where('admin_collection.year',$year);
+				$done = $this->db->update('admin_collection', ['amt_use_in_expense' => $inputamt + $getamt->amt_use_in_expense]);
+			}
 
 			$this->session->set_flashdata('success', 'Expense Added Successfully');
 			redirect("expenses", 'refresh');
@@ -67,6 +82,8 @@ class Expenses extends CI_Controller {
 		{
 			$this->data['title'] = 'Add Expense';
 			// For Admin and Members Who Collect The Amount	
+			$this->data['receivers'] = $this->Masters_model->get('expenses_master');
+			$this->data['years'] = $this->Payment_model->get_joda_fee();
 			$this->data['csrf'] = $this->_get_csrf_nonce();
 
 			$this->_render_page('pages/expenses' . DIRECTORY_SEPARATOR . 'add', $this->data);
@@ -111,6 +128,12 @@ class Expenses extends CI_Controller {
 		print_r(json_encode(['status'=>'-1','msg'=>'Successfully Deleted']));
 	}
 
+	public function get_total_expense_amount($year) {
+		$pyear = $year-1;
+		$gettotal = $this->db->query('SELECT * FROM admin_collection WHERE year='.$year.' || year='.$pyear );
+		$data = $gettotal->result();
+		print_r(json_encode($data));
+	}
 
 	/**
 	 * @return array A CSRF key-value pair

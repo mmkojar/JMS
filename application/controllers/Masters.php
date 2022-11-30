@@ -91,7 +91,6 @@ class Masters extends CI_Controller {
 	}
 
 	// For Fee 	
-
 	public function fee() {
 
 		$this->data['title'] = 'Financial Years';
@@ -157,7 +156,6 @@ class Masters extends CI_Controller {
 	}
 
 	// For Surname
-
 	public function surnames() {
 
 		$this->data['title'] = 'Surname Details';
@@ -215,7 +213,48 @@ class Masters extends CI_Controller {
 
 			redirect("masters/surnames", 'refresh');
 			
-								
+		}		
+	}
+
+	// For Surname
+	public function expenses() {
+
+		$this->data['title'] = 'Expense Details';
+
+		$this->data['expenses'] = $this->Masters_model->get('expenses_master');
+		
+		$this->_render_page('pages/masters' . DIRECTORY_SEPARATOR . 'expenses', $this->data);
+	}
+
+	public function expense_crud() {
+
+		$this->form_validation->set_rules('name','Required','required');
+
+		if ($this->form_validation->run() === TRUE)
+		{
+		
+			$id = $this->input->post('hidden_expense_id');			
+
+			if($id) {								
+				$additional_data = [
+					'name' => strtolower($this->input->post('name')),
+					'status' => $this->input->post('status')
+				];
+				$this->Masters_model->update('expenses_master',$id,$additional_data);
+				$this->session->set_flashdata('success', 'Data Updated Successfully');							
+			}
+			else {
+				$additional_data = [
+					'name' => strtolower($this->input->post('name')),
+					'status' => 'active'
+				];				
+				$this->Masters_model->insert('expenses_master',$additional_data);
+				$this->session->set_flashdata('success', 'Data Added Successfully');
+				
+			}							
+
+			redirect("masters/expenses", 'refresh');
+			
 		}		
 	}
 
@@ -229,13 +268,9 @@ class Masters extends CI_Controller {
 		}
 		if($table == 'fee_master') {
 			$stop_updatation = $this->Masters_model->check_for_duplication('fee_master','id',$id);
-		}		
-				
-		if(count($stop_updatation) > 0) {
-			print_r(json_encode(['status'=>'1','msg'=>'You Cannot Delete Once It Used']));
-			die;
 		}
-		else {
+
+		if($table == 'expenses_master') {
 			$del = $this->Masters_model->delete($table,$id);
 
 			if($del) {
@@ -246,6 +281,25 @@ class Masters extends CI_Controller {
 				die;
 			}
 		}
+		else {
+			if(count($stop_updatation) > 0) {
+				print_r(json_encode(['status'=>'1','msg'=>'You Cannot Delete Once It Used']));
+				die;
+			}
+			else {
+				$del = $this->Masters_model->delete($table,$id);
+	
+				if($del) {
+					print_r(json_encode(['status'=>'-1','msg'=>'Successfully Deleted']));
+				}
+				else {
+					print_r(json_encode(['status'=>'1','msg'=>'Error']));			
+					die;
+				}
+			}
+		}
+				
+		
 
 		
 	}

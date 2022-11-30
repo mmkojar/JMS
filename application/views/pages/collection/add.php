@@ -47,26 +47,26 @@
 						</select>
 					</div>
 				</div>
-				<div class="col-md-6">
-					<div class="form-group">
-						<label>Receipt Date</label>
-						<input type="date" class="form-control" name="receipt_date" id="receipt_date" required>
-					</div>
-				</div>
 				<div class="col-md-6 mb-2">
 					<div class="form-group">
-						<label>Receipt Amount</label>
-						<input type="text" name="receipt_amt" id="receipt_amt" class="form-control" required>
+						<label>Amount Collected</label>
+						<input type="number" name="amt_collected" id="amt_collected" class="form-control" required>
 					</div>
 				</div>
 				<div class="col-md-6">
+					<div class="form-group">
+						<label>Date</label>
+						<input type="date" class="form-control" name="date" id="date" required>
+					</div>
+				</div>
+				<!-- <div class="col-md-6">
 					<div class="form-group">
 						<label>Receiver Name</label>
 						<input type="text" class="form-control" name="receiver_name" id="receiver_name"
-							value="<?php echo $this->ion_auth->user()->row()->first_name.' '.$this->ion_auth->user()->row()->surname ?>"
+							value="<s?php //echo $this->ion_auth->user()->row()->first_name.' '.$this->ion_auth->user()->row()->surname ?>"
 							readonly>
 					</div>
-				</div>
+				</div> -->
 				<div class="col-md-6">
 					<div class="form-group">
 						<label>Remark</label>

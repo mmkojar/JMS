@@ -27,6 +27,9 @@
 						<li class="sidebar-item"><a href="<?php echo base_url('masters/surnames') ?>"
 								class="sidebar-link"><i class="mdi mdi-alert-octagon"></i><span class="hide-menu">
 									Surnames </span></a></li>
+						<li class="sidebar-item"><a href="<?php echo base_url('masters/expenses') ?>"
+								class="sidebar-link"><i class="mdi mdi-alert-octagon"></i><span class="hide-menu">
+									Expenses Name </span></a></li>
 					</ul>
 				</li>
 				<li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link"
@@ -48,15 +51,18 @@
 				<li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link"
 						href="<?php echo base_url('payment') ?>" aria-expanded="false"><i
 							class="mdi mdi-view-dashboard"></i><span class="hide-menu">Payments Entry</span></a></li>
+				<li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link"
+						href="<?php echo base_url('collection') ?>" aria-expanded="false"><i
+							class="mdi mdi-view-dashboard"></i><span class="hide-menu">Collectors Collection</span></a></li>
 				<?php endif; ?>
 
 				<?php if($this->ion_auth->is_admin()): ?>
 				<li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link"
-						href="<?php echo base_url('collection') ?>" aria-expanded="false"><i
-							class="mdi mdi-view-dashboard"></i><span class="hide-menu">Collections Entry</span></a></li>
+						href="<?php echo base_url('collection/admin') ?>" aria-expanded="false"><i
+							class="mdi mdi-view-dashboard"></i><span class="hide-menu">Admin Collection</span></a></li>
 				<li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link"
 						href="<?php echo base_url('expenses') ?>" aria-expanded="false"><i
-							class="mdi mdi-view-dashboard"></i><span class="hide-menu">Expenses Entry</span></a></li>
+							class="mdi mdi-view-dashboard"></i><span class="hide-menu">Income &amp; Expenses</span></a></li>
 				<li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link"
 						href="<?php echo base_url('sms') ?>" aria-expanded="false"><i
 							class="mdi mdi-view-dashboard"></i><span class="hide-menu">SMS Template</span></a></li>
